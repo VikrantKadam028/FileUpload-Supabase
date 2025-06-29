@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Files</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .main {
+      width: 400px;
+      height: auto;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border: 1px solid black;
+      flex-direction: column;
+      border-radius: 12px;
+    }
+    .heading {
+      width: 100%;
+      height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      border-bottom: 1px solid grey;
+      padding-bottom: 14px;
+    }
+    .heading i {
+      font-size: 18px;
+      border: 1px solid grey;
+      padding: 10px;
+      border-radius: 50px;
+    }
+    .text h4 {
+      font-size: 15px;
+    }
+    .text p {
+      font-size: 12px;
+      color: grey;
+    }
+    .dragDrop {
+      width: 90%;
+      height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border: 2px dashed grey;
+      margin-top: 30px;
+      border-radius: 12px;
+    }
+    .dragDrop i {
+      font-size: 30px;
+    }
+    .dragDrop h4 {
+      margin-top: 20px;
+      font-size: 15px;
+    }
+    .dragDrop p {
+      font-size: 14px;
+      color: grey;
+    }
+    #pdficon {
+      font-size: 15px;
+    }
+    .custom-file-upload {
+      margin-top: 30px;
+      padding: 8px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid grey;
+      cursor: pointer;
+      display: inline-block;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    /* Hide the real file input */
+    .custom-file-upload input[type="file"] {
+      display: none;
+    }
+
+    .submit {
+      width: 90%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .submit button {
+      width: 90%;
+      padding: 10px;
+      background: linear-gradient(135deg, #b987e8, #9721ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .processing {
+      width: 90%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+
+    .loader {
+      display: inline-grid;
+      width: 80px;
+      aspect-ratio: 2;
+      box-shadow: 0 5px #574951;
+      overflow: hidden;
+    }
+    .loader:before {
+      content: "";
+      margin: 0 25%;
+      background: #83988e;
+      clip-path: polygon(
+        97.55% 65.45%,
+        50% 100%,
+        2.45% 65.45%,
+        20.61% 9.55%,
+        79.39% 9.55%
+      );
+      transform-origin: bottom;
+      animation: l7-0 0.5s linear infinite, l7-1 3s steps(6) infinite;
+    }
+    @keyframes l7-0 {
+      0% {
+        rotate: -36deg;
+      }
+      to {
+        rotate: 36deg;
+      }
+    }
+    @keyframes l7-1 {
+      0% {
+        translate: -174% 0;
+      }
+      to {
+        translate: 174% 0;
+      }
+    }
+    .filesUploaded {
+      width: 100%;
+      max-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch; /* Ensures children take full width */
+      gap: 10px; /* Adds spacing between file items */
+      /* justify-content: space-evenly; */
+      margin-top: 10px;
+      overflow-y: auto;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .filesUploaded::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .filesUploaded::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    .filesUploaded::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+
+  <body>
+    <div class="container">
+      <div
+        class="alert alert-warning alert-dismissible fade show"
+        role="alert"
+        class="alert"
+      >
+        <p></p>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="main">
+        <div class="heading">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <div class="text">
+            <h4>Upload files</h4>
+            <p>Select and upload the files of your choice</p>
+          </div>
+        </div>
+
+        <div class="dragDrop">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <h4>Choose a file or drag & drop it here</h4>
+          <p>Only PDFs are accepted</p>
+          <label class="custom-file-upload">
+            <i class="fa-solid fa-file-pdf" id="pdficon"></i> Browse File
+            <input type="file" accept=".pdf" id="fileInput" />
+          </label>
+        </div>
+
+        <div class="processing">
+          <div class="loader"></div>
+        </div>
+
+        <div class="submit">
+          <button>Upload <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+        <div class="filesUploaded"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    <script src="script.js"></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
